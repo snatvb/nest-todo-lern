@@ -9,7 +9,7 @@ export class UsersService {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(createUserInput: CreateUserInput) {
-    const password = await bcrypt.hash(createUserInput.password, 10)
+    const password = await this.hashPassword(createUserInput.password)
     const foundUser = await this.prisma.user.findFirst({
       where: {
         OR: [
@@ -41,6 +41,10 @@ export class UsersService {
     return this.prisma.user.findFirst({ where: { id } })
   }
 
+  findOneByUsername(username: string) {
+    return this.prisma.user.findFirst({ where: { username } })
+  }
+
   async update(id: number, updateUserInput: UpdateUserInput) {
     const foundUser = await this.prisma.user.findUnique({
       where: {
@@ -55,7 +59,11 @@ export class UsersService {
     return foundUser
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`
+  hashPassword(password: string) {
+    return bcrypt.hash(password, 10)
+  }
+
+  validatePassword(password: string, hash: string) {
+    return bcrypt.compare(password, hash)
   }
 }

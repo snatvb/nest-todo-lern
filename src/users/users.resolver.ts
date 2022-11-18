@@ -1,24 +1,28 @@
-import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql'
+import { Resolver, Query, Mutation, Args, Int, Context } from '@nestjs/graphql'
 import { UsersService } from './users.service'
 import { User } from './entities/user.entity'
 import { CreateUserInput } from './dto/create-user.input'
 import { UpdateUserInput } from './dto/update-user.input'
+import { UseGuards } from '@nestjs/common'
+import { JwtAuthGuard } from '~/auth/jwrt-auth.guard'
 
 @Resolver(() => User)
 export class UsersResolver {
   constructor(private readonly usersService: UsersService) {}
 
-  @Mutation(() => User)
-  createUser(@Args('createUserInput') createUserInput: CreateUserInput) {
-    return this.usersService.create(createUserInput)
-  }
-
+  @UseGuards(JwtAuthGuard)
   @Query(() => [User], { name: 'users' })
   findAll(
     @Args('skip', { type: () => Int }) skip: number,
     @Args('take', { type: () => Int }) take: number,
   ) {
     return this.usersService.findAll(skip, take)
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Query(() => User, { name: 'me' })
+  me(@Context() context) {
+    return this.usersService.findOneByUsername(context.req.user.username)
   }
 
   @Query(() => User, { name: 'user' })
@@ -32,7 +36,7 @@ export class UsersResolver {
   }
 
   @Mutation(() => User)
-  removeUser(@Args('id', { type: () => Int }) id: number) {
-    return this.usersService.remove(id)
+  createUser(@Args('createUserInput') createUserInput: CreateUserInput) {
+    return this.usersService.create(createUserInput)
   }
 }
