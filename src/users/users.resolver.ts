@@ -49,4 +49,10 @@ export class UsersResolver {
   removeUser(@Args('id', { type: () => Int }) id: number) {
     return this.usersService.remove(id)
   }
+
+  @UseGuards(JwtAuthGuard, OwnerGuard((_, { userId }) => userId))
+  @Mutation(() => User)
+  removeMe(@Context() context) {
+    return this.usersService.remove(context.req.user.userId)
+  }
 }

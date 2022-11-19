@@ -1,18 +1,18 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { TodosService } from './todos.service';
+import { Test, TestingModule } from '@nestjs/testing'
+import { TodosService } from './todos.service'
 
 describe('TodosService', () => {
-  let service: TodosService;
+  let service: TodosService
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [TodosService],
-    }).compile();
+    }).compile()
 
-    service = module.get<TodosService>(TodosService);
-  });
+    service = module.get<TodosService>(TodosService)
+  })
 
   it('should be defined', () => {
-    expect(service).toBeDefined();
-  });
-});
+    expect(service).toBeDefined()
+  })
+})

@@ -21,15 +21,20 @@ export class TodosResolver {
   }
 
   @Query(() => [Todo], { name: 'todos' })
-  findAll(@Args('skip') skip: number, @Args('take') take: number) {
+  findAll(
+    @Args('skip', { type: () => Int }) skip: number,
+    @Args('take', { type: () => Int }) take: number,
+  ) {
     return this.todosService.findAll(skip, take)
   }
 
+  @UseGuards(JwtAuthGuard, OwnerGuard(({ id }) => id))
   @Query(() => Todo, { name: 'todo' })
   findOne(@Args('id', { type: () => Int }) id: number) {
     return this.todosService.findOne(id)
   }
 
+  @UseGuards(JwtAuthGuard, OwnerGuard(({ id }) => id))
   @Mutation(() => Todo)
   updateTodo(@Args('updateTodoInput') updateTodoInput: UpdateTodoInput) {
     return this.todosService.update(updateTodoInput.id, updateTodoInput)
