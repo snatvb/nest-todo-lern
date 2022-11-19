@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common'
-import { PrismaService } from 'prisma/prisma.service'
+import { PrismaService } from '../../prisma/prisma.service'
 import { CreateUserInput } from './dto/create-user.input'
 import { UpdateUserInput } from './dto/update-user.input'
 import * as bcrypt from 'bcrypt'
@@ -57,6 +57,10 @@ export class UsersService {
     foundUser.avatar = updateUserInput.avatar
     await this.prisma.user.update({ where: { id }, data: foundUser })
     return foundUser
+  }
+
+  remove(id: number) {
+    return this.prisma.user.delete({ where: { id } })
   }
 
   hashPassword(password: string) {

@@ -39,4 +39,9 @@ export class UsersResolver {
   createUser(@Args('createUserInput') createUserInput: CreateUserInput) {
     return this.usersService.create(createUserInput)
   }
+
+  @Mutation(() => User)
+  removeUser(@Args('id', { type: () => Int }) id: number) {
+    return this.usersService.remove(id)
+  }
 }
