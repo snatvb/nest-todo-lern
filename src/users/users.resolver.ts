@@ -4,7 +4,8 @@ import { User } from './entities/user.entity'
 import { CreateUserInput } from './dto/create-user.input'
 import { UpdateUserInput } from './dto/update-user.input'
 import { UseGuards } from '@nestjs/common'
-import { JwtAuthGuard } from '~/auth/jwrt-auth.guard'
+import { JwtAuthGuard } from '~/auth/jwr-auth.guard'
+import { OwnerGuard } from './owner.guard'
 
 @Resolver(() => User)
 export class UsersResolver {
@@ -30,6 +31,10 @@ export class UsersResolver {
     return this.usersService.findOne(id)
   }
 
+  @UseGuards(
+    JwtAuthGuard,
+    OwnerGuard(({ updateUserInput }) => updateUserInput.id),
+  )
   @Mutation(() => User)
   updateUser(@Args('updateUserInput') updateUserInput: UpdateUserInput) {
     return this.usersService.update(updateUserInput.id, updateUserInput)

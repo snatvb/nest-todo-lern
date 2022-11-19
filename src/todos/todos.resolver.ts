@@ -4,7 +4,7 @@ import { Todo } from './entities/todo.entity'
 import { CreateTodoInput } from './dto/create-todo.input'
 import { UpdateTodoInput } from './dto/update-todo.input'
 import { UseGuards } from '@nestjs/common'
-import { JwtAuthGuard } from '~/auth/jwrt-auth.guard'
+import { JwtAuthGuard } from '~/auth/jwr-auth.guard'
 import { OwnerGuard } from './owner.guard'
 
 @Resolver(() => Todo)

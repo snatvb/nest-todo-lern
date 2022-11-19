@@ -15,7 +15,7 @@ import { TodosModule } from './todos/todos.module'
       driver: ApolloDriver,
       debug: process.env.NODE_ENV !== 'production',
       playground: true,
-      autoSchemaFile: join(__dirname, 'schema.gql'),
+      autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
       sortSchema: true,
     }),
     UsersModule,
