@@ -35,7 +35,7 @@ export class TodosResolver {
     return this.todosService.update(updateTodoInput.id, updateTodoInput)
   }
 
-  @UseGuards(JwtAuthGuard, OwnerGuard)
+  @UseGuards(JwtAuthGuard, OwnerGuard(({ id }) => id))
   @Mutation(() => Todo)
   removeTodo(@Args('id', { type: () => Int }) id: number) {
     return this.todosService.remove(id)
