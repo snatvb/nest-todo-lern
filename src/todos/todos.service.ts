@@ -20,8 +20,11 @@ export class TodosService {
     return this.prisma.todo.create({ data: { ...createTodoInput, ownerId } })
   }
 
-  async findAll(skip: number, take: number) {
+  async findAllOwn(skip: number, take: number, userId: number) {
     const todos = await this.prisma.todo.findMany({
+      where: {
+        ownerId: userId,
+      },
       skip,
       take,
       include: {

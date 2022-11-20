@@ -20,12 +20,14 @@ export class TodosResolver {
     return this.todosService.create(input, context.req.user.userId)
   }
 
+  @UseGuards(JwtAuthGuard)
   @Query(() => [Todo], { name: 'todos' })
   findAll(
     @Args('skip', { type: () => Int }) skip: number,
     @Args('take', { type: () => Int }) take: number,
+    @Context() context,
   ) {
-    return this.todosService.findAll(skip, take)
+    return this.todosService.findAllOwn(skip, take, context.req.user.userId)
   }
 
   @UseGuards(JwtAuthGuard, OwnerGuard(({ id }) => id))

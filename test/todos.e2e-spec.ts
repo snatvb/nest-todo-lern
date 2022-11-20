@@ -114,6 +114,12 @@ describe('Todos (e2e)', () => {
     })
 
     it('Get todos', async () => {
+      const newTodoResponse = await create(
+        app,
+        token,
+        'Test todo 2',
+      ).expectNoErrors()
+
       const response = await request<{
         todos: Todo[]
       }>(app.getHttpServer())
@@ -121,10 +127,19 @@ describe('Todos (e2e)', () => {
         .query(getTodosQuery)
         .variables({
           skip: 0,
-          take: 1,
+          take: 10,
         })
 
-      expect(response.data.todos.length).toBe(1)
+      expect(response.data.todos.length).toBe(2)
+
+      const toRemoveId = newTodoResponse.data.createTodo.id
+      const removedResponse = await remove(
+        app,
+        token,
+        newTodoResponse.data.createTodo.id,
+      ).expectNoErrors()
+
+      expect(removedResponse.data.removeTodo.id).toBe(toRemoveId)
     })
 
     it('Get todo by id', async () => {
