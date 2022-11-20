@@ -1,5 +1,5 @@
 import { INestApplication } from '@nestjs/common'
-import request, { SuperTestExecutionResult } from 'supertest-graphql'
+import request from 'supertest-graphql'
 import gql from 'graphql-tag'
 import { User } from '~/users/entities/user.entity'
 import {
@@ -53,12 +53,14 @@ describe('Users (e2e)', () => {
     })
 
     it('updateUser', async () => {
+      const usernameBefore = user.username
       const response = await updateUser(app, token, user.id).expectNoErrors()
       user.avatar = response.data.updateUser.avatar
       expect(response.data.updateUser.avatar).toBe(
         'https://example.com/avatar.png',
       )
       expect(response.data.updateUser.id).toBe(user.id)
+      expect(response.data.updateUser.username).toBe(usernameBefore)
     })
 
     it('updateUser should failure', async () => {
@@ -70,7 +72,7 @@ describe('Users (e2e)', () => {
 
 function updateUser(app: INestApplication, token: string, userId: number) {
   return request<{
-    updateUser: { id: number; avatar: string }
+    updateUser: { id: number; avatar: string; username: string }
   }>(app.getHttpServer())
     .set('Authorization', `Bearer ${token}`)
     .mutate(
@@ -79,6 +81,7 @@ function updateUser(app: INestApplication, token: string, userId: number) {
           updateUser(updateUserInput: $input) {
             id
             avatar
+            username
           }
         }
       `,

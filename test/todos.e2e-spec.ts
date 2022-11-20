@@ -1,5 +1,5 @@
 import { INestApplication } from '@nestjs/common'
-import request, { SuperTestExecutionResult } from 'supertest-graphql'
+import request from 'supertest-graphql'
 import gql from 'graphql-tag'
 import { User } from '~/users/entities/user.entity'
 import {
