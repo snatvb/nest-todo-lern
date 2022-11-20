@@ -52,7 +52,7 @@ describe('Users (e2e)', () => {
       expect(responseSecond.username).toEqual(secondUser.username)
     })
 
-    it('updateUser', async () => {
+    it('User update', async () => {
       const usernameBefore = user.username
       const response = await updateUser(app, token, user.id).expectNoErrors()
       user.avatar = response.data.updateUser.avatar
@@ -63,7 +63,7 @@ describe('Users (e2e)', () => {
       expect(response.data.updateUser.username).toBe(usernameBefore)
     })
 
-    it('updateUser should failure', async () => {
+    it('User update should failure', async () => {
       const response = await updateUser(app, token, secondUser.id)
       expectForbidden(response)
     })
