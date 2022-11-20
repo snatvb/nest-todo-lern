@@ -2,7 +2,7 @@ import { INestApplication } from '@nestjs/common'
 import { TestingModule, Test } from '@nestjs/testing'
 import gql from 'graphql-tag'
 import { AppModule } from '~/app.module'
-import request from 'supertest-graphql'
+import request, { SuperTestExecutionResult } from 'supertest-graphql'
 import { User } from '~/users/entities/user.entity'
 
 export const testUser = {
@@ -117,4 +117,10 @@ export function removeMe(app: INestApplication, token: string) {
     .variables({})
     .expectNoErrors()
     .then(({ data }) => data.removeMe)
+}
+
+export function expectForbidden<T = unknown>(
+  response: SuperTestExecutionResult<T>,
+) {
+  expect(response.errors?.[0]?.extensions.code).toBe('FORBIDDEN')
 }

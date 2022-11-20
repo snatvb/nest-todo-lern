@@ -22,12 +22,12 @@ model User {
 }
 
 model Todo {
-  id        Int      @id @default(autoincrement())
-  title     String
-  content   String?
-  done      Boolean? @default(false)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  User      User?    @relation(fields: [ownerId], references: [id])
-  ownerId   Int?
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String?
+  done        Boolean? @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  User        User?    @relation(fields: [ownerId], references: [id])
+  ownerId     Int?
 }

@@ -3,6 +3,15 @@ import { CreateTodoInput } from './dto/create-todo.input'
 import { UpdateTodoInput } from './dto/update-todo.input'
 import { PrismaService } from '../../prisma/prisma.service'
 import { NotFoundError } from '@prisma/client/runtime'
+import { Todo, User } from '@prisma/client'
+
+type TodoIncluded = Todo & {
+  User: User
+}
+
+type TodoJoined = Todo & {
+  owner: User
+}
 
 @Injectable()
 export class TodosService {
@@ -19,23 +28,16 @@ export class TodosService {
         User: true,
       },
     })
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    return todos.map(({ User: { password, ...user }, ...todo }) => ({
-      ...todo,
-      owner: user,
-    }))
+    return todos.map(transformTodo)
   }
 
   async findOne(id: number) {
-    const { User, ...todo } = await this.prisma.todo.findUnique({
-      where: { id },
-      include: { User: true },
-    })
-
-    return {
-      ...todo,
-      owner: User,
-    }
+    return transformTodo(
+      await this.prisma.todo.findUnique({
+        where: { id },
+        include: { User: true },
+      }),
+    )
   }
 
   findOnePure(id: number) {
@@ -50,10 +52,23 @@ export class TodosService {
       throw new NotFoundError(`Todo with id ${id} not found`)
     }
 
-    return this.prisma.todo.update({ where: { id }, data: updateTodoInput })
+    return transformTodo(
+      await this.prisma.todo.update({
+        where: { id },
+        data: updateTodoInput,
+        include: { User: true },
+      }),
+    )
   }
 
   remove(id: number) {
     return this.prisma.todo.delete({ where: { id } })
+  }
+}
+
+function transformTodo({ User, ...todo }: TodoIncluded): TodoJoined {
+  return {
+    ...todo,
+    owner: User,
   }
 }

@@ -34,7 +34,7 @@ export class TodosResolver {
     return this.todosService.findOne(id)
   }
 
-  @UseGuards(JwtAuthGuard, OwnerGuard(({ id }) => id))
+  @UseGuards(JwtAuthGuard, OwnerGuard(({ updateTodoInput: { id } }) => id))
   @Mutation(() => Todo)
   updateTodo(@Args('updateTodoInput') updateTodoInput: UpdateTodoInput) {
     return this.todosService.update(updateTodoInput.id, updateTodoInput)

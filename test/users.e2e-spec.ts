@@ -1,8 +1,14 @@
 import { INestApplication } from '@nestjs/common'
-import request from 'supertest-graphql'
+import request, { SuperTestExecutionResult } from 'supertest-graphql'
 import gql from 'graphql-tag'
 import { User } from '~/users/entities/user.entity'
-import { createApp, createUser, loginUser, removeMe } from './helpers'
+import {
+  createApp,
+  createUser,
+  expectForbidden,
+  loginUser,
+  removeMe,
+} from './helpers'
 
 describe('Users (e2e)', () => {
   let app: INestApplication
@@ -57,7 +63,7 @@ describe('Users (e2e)', () => {
 
     it('updateUser should failure', async () => {
       const response = await updateUser(app, token, secondUser.id)
-      expect(response.errors?.[0]?.extensions.code).toBe('FORBIDDEN')
+      expectForbidden(response)
     })
   })
 })

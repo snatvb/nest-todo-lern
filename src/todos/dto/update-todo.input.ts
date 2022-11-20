@@ -6,7 +6,7 @@ export class UpdateTodoInput extends PartialType(CreateTodoInput) {
   @Field(() => Int)
   id: number
 
-  @Field(() => String)
+  @Field(() => String, { nullable: true })
   title: string
 
   @Field(() => String, { nullable: true })
