@@ -55,7 +55,7 @@ export class TodosService {
     return transformTodo(
       await this.prisma.todo.update({
         where: { id },
-        data: updateTodoInput,
+        data: { ...todo, ...updateTodoInput },
         include: { User: true },
       }),
     )

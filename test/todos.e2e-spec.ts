@@ -32,15 +32,20 @@ type Todo = {
   }
 }
 
+const todoElement = `
+id
+title
+done
+description
+owner {
+  id
+}
+`
+
 const updateQuery = gql`
   mutation updateTodo($input: UpdateTodoInput!) {
     updateTodo(updateTodoInput: $input) {
-      id
-      title
-      done
-      owner {
-        id
-      }
+      ${todoElement}
     }
   }
 `
@@ -48,12 +53,7 @@ const updateQuery = gql`
 const getQuery = gql`
   query todo($id: Int!) {
     todo(id: $id) {
-      id
-      title
-      done
-      owner {
-        id
-      }
+      ${todoElement}
     }
   }
 `
@@ -61,12 +61,7 @@ const getQuery = gql`
 const getTodosQuery = gql`
   query todos($skip: Int!, $take: Int!) {
     todos(skip: $skip, take: $take) {
-      id
-      title
-      done
-      owner {
-        id
-      }
+      ${todoElement}
     }
   }
 `
@@ -173,8 +168,9 @@ describe('Todos (e2e)', () => {
         })
 
       expect(response.data.updateTodo.id).toBe(createdTodoId)
-      expect(response.data.updateTodo.title).toBe('updated title')
       expect(response.data.updateTodo.done).toBe(true)
+      expect(response.data.updateTodo.title).toBe('updated title')
+      expect(response.data.updateTodo.description).toBe('Test description')
     })
 
     it('Update todo should be failure', async () => {
@@ -199,54 +195,6 @@ describe('Todos (e2e)', () => {
       expect(response.data.removeTodo.id).toBe(createdTodoId)
     }
   })
-
-  // beforeAll(async () => {
-  //   app = await createApp()
-  //   await createUser(app)
-  //   const signed = await loginUser(app, user1)
-  //   user = signed.user
-  //   token = signed.accessToken
-
-  //   await createUser(app, user2)
-  //   const secondSigned = await loginUser(app, user2)
-  //   secondUser = secondSigned.user
-  //   secondToken = secondSigned.accessToken
-
-  //   const title = 'Test todo'
-  //   const response = await request<{
-  //     crateTodo: { id: number; title: string }
-  //   }>(app.getHttpServer())
-  //     .set('Authorization', `Bearer ${token}`)
-  //     .mutate(
-  //       gql`
-  //         mutation createTodo($input: CreateTodoInput!) {
-  //           createTodo(createTodoInput: $input) {
-  //             id
-  //             title
-  //           }
-  //         }
-  //       `,
-  //     )
-  //     .variables({
-  //       input: {
-  //         title,
-  //       },
-  //     })
-  //     .expectNoErrors()
-
-  //   expect(response.data.crateTodo.title).toBe(title)
-  // })
-
-  // afterAll(async () => {
-  //   try {
-  //     const response = await removeMe(app, token)
-  //     const responseSecond = await removeMe(app, secondToken)
-  //     expect(response.username).toEqual(user.username)
-  //     expect(responseSecond.username).toEqual(secondUser.username)
-  //   } finally {
-  //     await app.close()
-  //   }
-  // })
 })
 
 function create(
